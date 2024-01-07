@@ -16,7 +16,11 @@ const RootDiv = styled.div`
   border: 1px solid ${COLORS.GREY};
   padding: 10px 20px;
   color: ${COLORS.GREY};
-  min-width: 400px;
+  width: 380px;
+  @media (max-width: 600px) {
+    width: 320px;
+    padding: 10px 15px;
+  }
 `;
 
 const UserInfo = styled.div`
@@ -33,6 +37,15 @@ const ButtonDiv = styled.div`
 
 const UserName = styled(Typography)`
   margin-bottom: 10px;
+  @media (max-width: 600px) {
+    font-size: 16px;
+  }
+`;
+
+const Body = styled(Typography)`
+  @media (max-width: 600px) {
+    font-size: 14px;
+  }
 `;
 
 const AdressDiv = styled.div`
@@ -57,13 +70,13 @@ export const UserCard = ({ user }: UserCardProps) => {
         <div>
           <UserName variant='h6'>{`${user.name.title} ${user.name.first} ${user.name.last}`}</UserName>
 
-          <Typography variant='body1'>email: {user.email}</Typography>
+          <Body variant='body1'>email: {user.email}</Body>
           <AdressDiv>
-            <Typography variant='body1'>country: {user.location.country}</Typography>
-            <Typography variant='body1'>city: {user.location.city}</Typography>
-            <Typography variant='body1'>
+            <Body variant='body1'>country: {user.location.country}</Body>
+            <Body variant='body1'>city: {user.location.city}</Body>
+            <Body variant='body1'>
               street: {user.location.street.name}, {user.location.street.number}
-            </Typography>
+            </Body>
           </AdressDiv>
         </div>
         <div>

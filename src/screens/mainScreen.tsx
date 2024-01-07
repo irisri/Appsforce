@@ -21,12 +21,20 @@ const RootBox = styled(Box)`
 
 const Title = styled(Typography)`
   margin-bottom: 50px;
+  text-align: center;
+  @media (max-width: 900px) {
+    margin-bottom: 30px;
+  }
 `;
 
 const AddUserBox = styled(Box)`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
+  @media (max-width: 900px) {
+    justify-content: center;
+    margin-bottom: 30px;
+  }
 `;
 
 const UserBox = styled(Box)`
@@ -35,6 +43,10 @@ const UserBox = styled(Box)`
   gap: 50px;
   flex-wrap: wrap;
   justify-content: space-between;
+  @media (max-width: 900px) {
+    justify-content: center;
+    gap: 20px;
+  }
 `;
 
 const newUserTemplate: UserProps = {

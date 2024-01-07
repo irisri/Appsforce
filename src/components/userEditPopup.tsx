@@ -13,8 +13,11 @@ import { UserProps } from '../redux/user.interface';
 import { PopupActionButton } from './button.styled';
 
 const RootDiv = styled.div`
-  min-width: 400px;
-  padding: 50px;
+  min-width: 350px;
+  padding: 20px;
+  @media (max-width: 600px) {
+    min-width: 300px;
+  }
 `;
 
 const FormDiv = styled.div`
@@ -28,10 +31,16 @@ const InfoDiv = styled.div`
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 const SmallTextFiled = styled(TextField)`
-  width: 80px;
+  width: 100px;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const ButtonDiv = styled.div`
@@ -198,15 +207,17 @@ export const UserEditPopup = ({ isUniqueEmail }: UserPopupProps) => {
 
           <div>
             <Typography variant='body1'>email:</Typography>
-            <TextField
-              id='outlined-basic'
-              variant='outlined'
-              label='email'
-              value={email}
-              onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-                editField(event.target.value, FildName.email)
-              }
-            />
+            <InfoDiv>
+              <TextField
+                id='outlined-basic'
+                variant='outlined'
+                label='email'
+                value={email}
+                onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                  editField(event.target.value, FildName.email)
+                }
+              />
+            </InfoDiv>
           </div>
 
           <div>
