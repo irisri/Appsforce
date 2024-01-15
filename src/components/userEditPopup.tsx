@@ -1,60 +1,18 @@
 import { useState, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from '@emotion/styled';
 import { Typography, Dialog, TextField } from '@mui/material';
 import isEmail from 'validator/lib/isEmail';
 
-import { COLORS } from '../utils/const';
 import type { RootState, AppDispatch } from '../redux/store';
-import { saveUser, setIsNewUser, clearEditUser } from '../redux/usersSlice';
-import { closePopup } from '../redux/popupSlice';
+import { saveUser, setIsNewUser, setEditUser } from '../redux/usersSlice';
+import { toggleEditOpoup } from '../redux/popupSlice';
 
 import { UserProps } from '../redux/user.interface';
 import { PopupActionButton } from './button.styled';
-
-const RootDiv = styled.div`
-  min-width: 350px;
-  padding: 20px;
-  @media (max-width: 600px) {
-    min-width: 300px;
-  }
-`;
-
-const FormDiv = styled.div`
-  margin-top: 24px;
-  display: flex;
-  gap: 20px;
-  flex-direction: column;
-`;
-
-const InfoDiv = styled.div`
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  @media (max-width: 600px) {
-    flex-direction: column;
-  }
-`;
-
-const SmallTextFiled = styled(TextField)`
-  width: 100px;
-  @media (max-width: 600px) {
-    width: 100%;
-  }
-`;
-
-const ButtonDiv = styled.div`
-  margin-top: 24px;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const ErrorMessage = styled(Typography)`
-  color: ${COLORS.ERROR};
-`;
+import { RootDiv, FormDiv, InfoDiv, SmallTextFiled, ButtonDiv, ErrorMessage } from './editPopUp.styled';
 
 interface UserPopupProps {
-  isUniqueEmail: (value: string) => UserProps | undefined;
+  isUniqueEmail: (value: string, id: string) => UserProps | undefined;
   isNew?: boolean;
 }
 
@@ -72,7 +30,7 @@ enum FildName {
 export const UserEditPopup = ({ isUniqueEmail }: UserPopupProps) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const open = useSelector<RootState>((state) => state.popupStoe.openPopup) as boolean;
+  const isOpenEditPopup = useSelector<RootState>((state) => state.popupStoe.isOpenEditPopup) as boolean;
   const isNewUser = useSelector<RootState>((state) => state.usersStore.isNewUser) as boolean;
   const user = useSelector<RootState>((state) => state.usersStore.editUser) as UserProps;
 
@@ -89,11 +47,11 @@ export const UserEditPopup = ({ isUniqueEmail }: UserPopupProps) => {
 
   const close = () => {
     if (isNewUser) dispatch(setIsNewUser(false));
-    dispatch(clearEditUser());
-    dispatch(closePopup());
+    dispatch(setEditUser(undefined));
+    dispatch(toggleEditOpoup());
   };
 
-  const onSave = () => {
+  const checkInputs = () => {
     let isError = false;
     if (firstName.length < 3 || lastName.length < 3) {
       isError = true;
@@ -104,12 +62,18 @@ export const UserEditPopup = ({ isUniqueEmail }: UserPopupProps) => {
       isError = true;
       setError('Please set an email');
     }
-    const isUnique = isUniqueEmail(email);
+
+    const isUnique = isUniqueEmail(email, user.login.uuid);
     if (isUnique) {
       isError = true;
       setError('This email allready exists');
     }
 
+    return isError;
+  };
+
+  const onSave = () => {
+    const isError = checkInputs();
     if (isError) return;
 
     let newUser: UserProps = {
@@ -132,7 +96,7 @@ export const UserEditPopup = ({ isUniqueEmail }: UserPopupProps) => {
     };
 
     dispatch(saveUser(newUser));
-    dispatch(closePopup());
+    dispatch(toggleEditOpoup());
   };
 
   const editField = (value: string, fieldName: FildName) => {
@@ -165,7 +129,7 @@ export const UserEditPopup = ({ isUniqueEmail }: UserPopupProps) => {
   };
 
   return (
-    <Dialog open={open} onClose={close}>
+    <Dialog open={isOpenEditPopup} onClose={close}>
       <RootDiv>
         <Typography variant='h6'>Edit User</Typography>
         <FormDiv>

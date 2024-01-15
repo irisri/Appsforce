@@ -1,31 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { UserProps } from './user.interface';
-
 interface PopupState {
-  openPopup: boolean;
-  editUser: UserProps | undefined;
+  isOpenEditPopup: boolean;
+  isOpenConfirmationPopup: boolean;
 }
 
 const initialState: PopupState = {
-  openPopup: false,
-  editUser: undefined,
+  isOpenEditPopup: false,
+  isOpenConfirmationPopup: false,
 };
 
 export const popupSlice = createSlice({
   name: 'popup',
   initialState,
   reducers: {
-    closePopup: (state) => {
-      state.editUser = undefined;
-      state.openPopup = false;
+    toggleEditOpoup: (state) => {
+      state.isOpenEditPopup = !state.isOpenEditPopup;
     },
-    openPopup: (state) => {
-      state.openPopup = true;
+    toggleConfirmationPopup: (state) => {
+      state.isOpenConfirmationPopup = !state.isOpenConfirmationPopup;
     },
   },
 });
 
-export const { closePopup, openPopup } = popupSlice.actions;
+export const { toggleEditOpoup, toggleConfirmationPopup } = popupSlice.actions;
 
 export default popupSlice.reducer;

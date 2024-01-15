@@ -6,14 +6,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 import type { RootState, AppDispatch } from '../redux/store';
 import { setUsers, setIsNewUser, setEditUser } from '../redux/usersSlice';
+import { toggleEditOpoup } from '../redux/popupSlice';
+import { UserProps } from '../redux/user.interface';
 
 import { URL } from '../utils/const';
-import { UserProps } from '../redux/user.interface';
 
 import { UserCard } from '../components/userCard';
 import { UserEditPopup } from '../components/userEditPopup';
+import { ConfirmationPopup } from '../components/confirmPopup';
 import { PopupActionButton } from '../components/button.styled';
-import { openPopup } from '../redux/popupSlice';
 
 const RootBox = styled(Box)`
   margin-top: 50px;
@@ -93,8 +94,11 @@ export const MainScreen = () => {
     getData();
   }, [users, dispatch]);
 
-  const isUniqueEmail = (email: string): UserProps | undefined => {
-    return users.find((user) => user.email === email);
+  const isUniqueEmail = (email: string, id: string): UserProps | undefined => {
+    return users.find((user) => {
+      if (user.email === email && user.login.uuid) return undefined;
+      return user.email === email;
+    });
   };
 
   const addNewUser = () => {
@@ -108,12 +112,13 @@ export const MainScreen = () => {
     dispatch(setIsNewUser(true));
 
     dispatch(setEditUser(newUser));
-    dispatch(openPopup());
+    dispatch(toggleEditOpoup());
   };
 
   return (
     <Container maxWidth='md'>
       {userEdit ? <UserEditPopup isUniqueEmail={isUniqueEmail} /> : null}
+      <ConfirmationPopup />
       <RootBox>
         <Title variant='h3'>User list</Title>
         <AddUserBox>

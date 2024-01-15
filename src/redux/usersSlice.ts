@@ -7,6 +7,7 @@ interface UserState {
   users: UserProps[];
   editUser: UserProps | undefined;
   isNewUser: boolean;
+  deleteUser: UserProps | undefined;
 }
 
 const initialState: UserState = {
@@ -14,8 +15,8 @@ const initialState: UserState = {
   users: [],
   editUser: undefined,
   isNewUser: false,
+  deleteUser: undefined,
 };
-
 
 export const usersSlice = createSlice({
   name: 'users',
@@ -24,9 +25,8 @@ export const usersSlice = createSlice({
     setUsers: (state, action: PayloadAction<UserProps[]>) => {
       state.users = action.payload;
     },
-    deleteUser: (state, action: PayloadAction<string>) => {
-      const id = action.payload;
-      state.users = state.users.filter((user) => user.login.uuid !== id);
+    deleteUser: (state) => {
+      state.users = state.users.filter((user) => user.login.uuid !== state.deleteUser?.login.uuid);
     },
     setIsNewUser: (state, action: PayloadAction<boolean>) => {
       state.isNewUser = action.payload;
@@ -46,15 +46,15 @@ export const usersSlice = createSlice({
 
       state.editUser = undefined;
     },
-    setEditUser: (state, action: PayloadAction<UserProps>) => {
+    setEditUser: (state, action: PayloadAction<UserProps | undefined>) => {
       state.editUser = action.payload;
     },
-    clearEditUser: (state) => {
-      state.editUser = undefined;
+    setDeleteUser: (state, action: PayloadAction<UserProps | undefined>) => {
+      state.deleteUser = action.payload;
     },
   },
 });
 
-export const { setUsers, deleteUser, saveUser, setIsNewUser, setEditUser, clearEditUser } = usersSlice.actions;
+export const { setUsers, deleteUser, saveUser, setIsNewUser, setEditUser, setDeleteUser } = usersSlice.actions;
 
 export default usersSlice.reducer;
